@@ -1,6 +1,25 @@
+from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+from urllib.error import HTTPError
 
-html = urlopen('https://www.pythonscraping.com/pages/page1.html')
-bs = BeautifulSoup(html.read(), 'lxml')
-print(bs.h1)
+
+def getTitle(url):
+    try:
+        html = urlopen(url)
+    except HTTPError as e:
+        return None
+    try:
+        bs = BeautifulSoup(html.read(), 'html.parser')
+        title = bs.body.h1
+    except AttributeError as e:
+        return None
+    return title
+
+
+title = getTitle('https://www.pythonscraping.com/pages/page1.html')
+
+if title is None:
+    print('Title could not be found')
+else:
+    print(title)
